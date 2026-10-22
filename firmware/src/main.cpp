@@ -21,7 +21,7 @@ void setup(){
 }
 
 void loop(){
-  
+  Serial.println(get_distancia);
 }   
 
 float get_distancia()
