@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "author": "Pedro Heraclito",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-breadboard-half", "id": "bb1", "top": -291, "left": -131.6, "attrs": {} },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -115.2, "left": 24.04, "attrs": {} },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": -224,
+      "left": 226.4,
+      "attrs": { "pins": "i2c" }
+    },
+    {
+      "type": "wokwi-hc-sr04",
+      "id": "ultrasonic1",
+      "top": -60.7,
+      "left": -276.5,
+      "rotate": 270,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "ultrasonic1:ECHO", "esp:26", "yellow", [ "h153.6", "v10.4" ] ],
+    [ "ultrasonic1:TRIG", "esp:25", "green", [ "h144", "v-9.2" ] ],
+    [ "ultrasonic1:GND", "esp:GND.1", "black", [ "h153.6", "v68.4" ] ],
+    [ "ultrasonic1:VCC", "bb1:8b.i", "red", [ "h0" ] ],
+    [ "lcd1:GND", "esp:GND.2", "black", [ "h-19.2", "v28.8" ] ],
+    [ "esp:3V3", "bb1:8b.g", "red", [ "h-9.45", "v-76.8", "h-9.6" ] ],
+    [ "lcd1:VCC", "bb1:8b.h", "red", [ "h-38.4", "v28.9" ] ],
+    [ "esp:17", "lcd1:SDA", "orange", [ "h96", "v-182.4" ] ],
+    [ "esp:16", "lcd1:SCL", "cyan", [ "h115.2", "v-19.2" ] ]
+  ],
+  "dependencies": {}
+}
