@@ -56,5 +56,13 @@ float media(float *vetor, int tamanho);
 float desvio_padrao(const float *vetor, int tamanho, float med);
 
 
+/**
+ * @brief calcula a porcentagem de lotacao da lixeira
+ * @param dist distancia medida pelo sensor na tampa
+ * @param h_lixeira_vazia distancia da tampa da lixeira ate a base
+ * @param h_lixeira_cheia distancia minima que o conteudo da lixeira pode chegar do sensor
+ * @return float da porcentagem de lotacao da lixeira
+ */
+float CalculaPorcentagem(float dist, int h_lixeira_vazia, int h_lixeira_cheia);
 
 #endif MEDICAO_H

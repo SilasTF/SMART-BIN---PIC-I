@@ -1,6 +1,6 @@
 #include "medicao.h"
+#include "display_utils.h"
 #include <Wire.h>
-#include <LiquidCrystal_I2C.h>
 
 
 // constantes
@@ -16,15 +16,6 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 
-
-//Calcula a porcentgem considerando as medicoes pre definidas
-float CalculaPorcentagem(float dist){
-  float p = (ALTURA_LIXEIRA_VAZIA - dist) * 100.0 / (ALTURA_LIXEIRA_VAZIA - ALTURA_LIXEIRA_CHEIA);
-  if (p > 100) p = 100;
-  else if (p < 0) p = 0;
-
-  return p;
-}
 
 void setup(){
   Serial.begin(9600);
@@ -51,26 +42,14 @@ void loop(){
   
 
   if (dist < 0){
-    lcd.setCursor(0, 0);
-    lcd.print("Erro na leitura ");
-    lcd.setCursor(0, 1);
-    lcd.print("Vericar sensor");
+    imprime_mensagem_erro(lcd);
   }
   
   else{
 
-    float pct = CalculaPorcentagem(dist);
+    float pct = CalculaPorcentagem(dist, ALTURA_LIXEIRA_VAZIA, ALTURA_LIXEIRA_CHEIA);
 
-    lcd.setCursor(0, 0);
-    lcd.print("Dist: ");
-    lcd.print(dist, 1);
-    lcd.print(" cm   ");
-
-    lcd.setCursor(0, 1);
-    lcd.print("Nivel: ");
-    lcd.print(pct, 0);
-    lcd.print("%       ");
-
+    imprime_distancia_porcentagem(lcd, dist, pct);
   }
   
   delay(1000);

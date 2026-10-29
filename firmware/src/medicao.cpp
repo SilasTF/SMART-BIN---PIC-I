@@ -135,3 +135,12 @@ float desvio_padrao(const float *vetor, int tamanho, float med)
   }
   return sqrt(soma / (tamanho - 1));
 }
+
+
+float CalculaPorcentagem(float dist, int h_lixeira_vazia, int h_lixeira_cheia){
+  float p = (h_lixeira_vazia - dist) * 100.0 / (h_lixeira_vazia - h_lixeira_cheia);
+  if (p > 100) p = 100;
+  else if (p < 0) p = 0;
+
+  return p;
+}
