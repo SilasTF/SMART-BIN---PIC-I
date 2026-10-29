@@ -6,8 +6,8 @@
 // constantes
 #define TRIGGER 25
 #define ECHO 26 
-#define SDA_PIN 17
-#define SCL_PIN 16
+#define SDA_PIN 21
+#define SCL_PIN 22
 
 //TROCAR PELAS MEDICOES REAIS
 #define ALTURA_LIXEIRA_VAZIA 45
