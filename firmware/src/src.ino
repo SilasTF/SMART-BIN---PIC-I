@@ -1,6 +1,7 @@
+#include <Wire.h>
 #include "medicao.h"
 #include "display_utils.h"
-#include <Wire.h>
+#include "notification_utils.h"
 
 
 // constantes
@@ -9,12 +10,19 @@
 #define SDA_PIN 21
 #define SCL_PIN 22
 
+#define NIVEL_ALERTA_LIXEIRA 80 // porcentagem a partir da qual a lixeira emite a notificacao
+
 //TROCAR PELAS MEDICOES REAIS
 #define ALTURA_LIXEIRA_VAZIA 45
 #define ALTURA_LIXEIRA_CHEIA 5
 
 
+// objetos
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
+
+// variaveis globais
+bool ja_ocorreu_aviso; // indica se a notificacao ja foi enviada
+float pct; // armazena a porcentagem de lotacao da lixeira
 
 
 void setup(){
@@ -27,11 +35,7 @@ void setup(){
   pinMode(ECHO,INPUT);
 
   lcd.init();
-  lcd.backlight();
-  lcd.setCursor(0,0);
-  lcd.print("SmartBin");
-  delay(1000);
-  lcd.clear();
+  imprime_inicializacao(lcd);
 }
 
 void loop(){
@@ -44,12 +48,25 @@ void loop(){
   if (dist < 0){
     imprime_mensagem_erro(lcd);
   }
-  
   else{
+    float pct_atual = CalculaPorcentagem(dist, ALTURA_LIXEIRA_VAZIA, ALTURA_LIXEIRA_CHEIA);
 
-    float pct = CalculaPorcentagem(dist, ALTURA_LIXEIRA_VAZIA, ALTURA_LIXEIRA_CHEIA);
+    if (!(pct_atual > pct - 5 && pct_atual < pct + 2))
+    {
+      pct = pct_atual;
+    }
 
     imprime_distancia_porcentagem(lcd, dist, pct);
+
+    if (pct > NIVEL_ALERTA_LIXEIRA && !ja_ocorreu_aviso)
+    {
+      envia_mensagem_telegram("Já está na hora tirar o lixo fora!");
+      ja_ocorreu_aviso = 1;
+    }
+    else
+    {
+      ja_ocorreu_aviso = 0;
+    }
   }
   
   delay(1000);

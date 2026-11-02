@@ -2,6 +2,26 @@
 #include "display_utils.h"
 
 /**
+ * @brief imprime uma mensagem de inicializacao no display
+ * @param lcd objeto display para a impressao
+ */
+void imprime_inicializacao(LiquidCrystal_I2C lcd)
+{
+  lcd.clearWriteError();
+  lcd.clear();
+
+  lcd.backlight();
+
+  lcd.setCursor(3, 0);
+  lcd.print("Smart Bin");
+  lcd.setCursor(0, 1);
+  lcd.print("Inicializando...");
+
+  delay(2000);
+  lcd.clear();
+}
+
+/**
  * @brief imprime uma mensagem de erro no display 16x2
  * @param lcd objeto display para a impressao
  */
