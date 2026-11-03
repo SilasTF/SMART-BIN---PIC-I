@@ -56,7 +56,7 @@ void loop(){
       pct = pct_atual;
     }
 
-    imprime_distancia_porcentagem(lcd, dist, pct);
+    imprime_porcentagem(lcd, pct);
 
     if (pct > NIVEL_ALERTA_LIXEIRA && !ja_ocorreu_aviso)
     {

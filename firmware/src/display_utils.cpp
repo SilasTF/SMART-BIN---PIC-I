@@ -54,7 +54,7 @@ void imprime_distancia_porcentagem(LiquidCrystal_I2C lcd, float dist, float prct
   lcd.setCursor(0, 0);
   lcd.printf("Dist: %.0f", dist);
   lcd.setCursor(0, 1);
-  lcd.printf("Nivel: %.2f", prctg);
+  lcd.printf("Nivel: %.0f%%", prctg);
 }
 
 /**
@@ -71,8 +71,8 @@ void imprime_porcentagem(LiquidCrystal_I2C lcd, float prctg)
 
   lcd.setCursor(3, 0);
   lcd.print("Smart Bin");
-  lcd.setCursor(0, 1);
-  lcd.printf("Nivel: %.2f", prctg);
+  lcd.setCursor(3, 1);
+  lcd.printf("Nivel: %.0f%%", prctg);
 }
 
 /**
