@@ -66,25 +66,38 @@ Descreva com mais detalhes o contexto do projeto:
 
 ## 📂 Estrutura do Repositório
 
-```text
+```
 smart-bin/
-├── docs/                  # Documentação do projeto
-├── firmware/              # Código embarcado do ESP32
-│   ├── include/
-│   │   └── medicao.h      # Declarações das funções de medição
+├── docs/                                  # Documentação do projeto
+├── firmware/                              # Código embarcado do ESP32
+│   ├── include/                           # Cabeçalhos adicionais
 │   └── src/
-│       ├── medicao.cpp    # Lógica de leitura do sensor e cálculo da ocupação
-│       ├── medicao.h
-│       └── src.ino        # Arquivo principal (setup e loop)
-├── hardware/              # Arquivos de hardware
-│   ├── cad/               # Modelos CAD da estrutura
-│   ├── datasheets/        # Datasheets dos componentes
-│   └── esquematico.pdf    # Esquemático do circuito
-├── software/              # Códigos externos (bibliotecas de terceiros) utilizados no projeto
+│       ├── src.ino                        # Arquivo principal (setup e loop)
+│       ├── medicao.cpp / medicao.h        # Leitura do sensor e cálculo da ocupação
+│       ├── display_utils.cpp / .h         # Funções de exibição no display LCD
+│       └── notification_utils.cpp / .h    # Funções de aviso/notificação ao usuário
+├── hardware/                              # Arquivos de hardware
+│   ├── Wokwi/
+│   │   └── Esquematico medidor de aproximacao/
+│   │       ├── diagram.json               # Circuito (peças e ligações)
+│   │       ├── sketch.ino                 # Código da simulação
+│   │       └── wokwi-project.txt          # Referência do projeto no Wokwi
+│   ├── cad/
+│   │   └── 3D models/                     # Modelos 3D da estrutura
+│   ├── datasheets/                        # Datasheets dos componentes
+│   └── esquematico.pdf                    # Esquemático do circuito
+├── software/                              # Códigos externos (bibliotecas de terceiros)
 ├── .gitignore
+├── LICENSE                                # Licença MIT
 └── README.md
 ```
 
+| Pasta       | Descrição                                                                                                                      |
+|-------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `docs/`     | Documentação e materiais de apoio do projeto.                                                                                  |
+| `firmware/` | Código embarcado do ESP32: leitura do sensor, cálculo do percentual, controle de LEDs, display e avisos ao usuário.            |
+| `hardware/` | Simulação Wokwi, esquemático em PDF, modelos CAD/3D e datasheets dos componentes.                                              |
+| `software/` | Códigos externos (de terceiros) utilizados no projeto, não desenvolvidos pela equipe.                                          |
 | Pasta | Descrição |
 |---|---|
 | `docs/` | Documentação e materiais de apoio do projeto. |
@@ -114,9 +127,8 @@ Simulação do circuito feita no [Wokwi](https://wokwi.com/projects/479130465403
 
 ### Arquivos da simulação
 
-Os arquivos do projeto Wokwi estão em [`hardware/wokwi/`](hardware/wokwi/):
+Os arquivos do projeto Wokwi estão em [`hardware/Wokwi/Esquematico medidor de aproximacao/`](https://github.com/SilasTF/SMART-BIN---PIC-I/tree/main/hardware/Wokwi/Esquematico%20medidor%20de%20aproximacao):
 
 - `diagram.json`: circuito (peças e ligações)
 - `sketch.ino`: código da simulação
-
-Para reabrir o circuito, crie um projeto novo no Wokwi e cole o conteúdo do `diagram.json`.
+- `wokwi-project.txt`: referência do projeto no Wokwi
