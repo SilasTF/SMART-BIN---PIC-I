@@ -53,14 +53,12 @@ Descreva com mais detalhes o contexto do projeto:
 | Componente | Função no projeto |
 |---|---|
 | **ESP32** | Responsável pelo controle e processamento das informações recebidas pelos sensores, além de possuir comunicação sem fio. |
-| **Sensor de proximidade (ultrassônico)** | Identifica a distância entre o sensor e o nível do lixo dentro da lixeira, permitindo calcular aproximadamente o percentual de ocupação. |
-| **LEDs** | Indicam o nível de preenchimento da lixeira, com cores diferentes para os níveis baixo, médio e alto. |
+| **Sensor de proximidade (HC-SR04 P)** | Identifica a distância entre o sensor e o nível do lixo dentro da lixeira, permitindo calcular aproximadamente o percentual de ocupação. |
 | **Protoboard** | Realiza as conexões entre os componentes eletrônicos para teste. Caso não seja possível soldar, ela pode ser usada diretamente na montagem final. |
 | **Cabos jumper** | Realizam as conexões elétricas entre o ESP32, o sensor e os demais componentes. |
-| **Resistores** | Controlam a corrente elétrica dos LEDs e protegem os componentes. |
 | **Bateria** | Alimenta o circuito. |
-| **Lixeira** | Estrutura física onde são instalados o sensor e os componentes necessários para o funcionamento do sistema. |
-| **LCD Keypad Shield** | Funciona como display do projeto, exibindo o percentual de ocupação do lixo. |
+| **Lixeira (Lixeira izy Ou 15L)** | Estrutura física onde são instalados o sensor e os componentes necessários para o funcionamento do sistema. |
+| **LCD Keypad Shield I2C** | Funciona como display do projeto, exibindo o percentual de ocupação do lixo. |
 
 ---
 
@@ -98,12 +96,6 @@ smart-bin/
 | `firmware/` | Código embarcado do ESP32: leitura do sensor, cálculo do percentual, controle de LEDs, display e avisos ao usuário.            |
 | `hardware/` | Simulação Wokwi, esquemático em PDF, modelos CAD/3D e datasheets dos componentes.                                              |
 | `software/` | Códigos externos (de terceiros) utilizados no projeto, não desenvolvidos pela equipe.                                          |
-| Pasta | Descrição |
-|---|---|
-| `docs/` | Documentação e materiais de apoio do projeto. |
-| `firmware/` | Código embarcado que roda no ESP32, responsável pela leitura do sensor, cálculo do percentual e controle de LEDs e display. |
-| `hardware/` | Esquemático, modelos CAD e datasheets dos componentes. |
-| `software/` | Códigos externos (de terceiros) utilizados no projeto, não desenvolvidos pela equipe. |
 
 
 ## 🔌 Desenho Esquemático
@@ -120,8 +112,8 @@ Simulação do circuito feita no [Wokwi](https://wokwi.com/projects/479130465403
 | Sensor ultrassônico HC-SR04 | ECHO | GPIO 26 |
 | Sensor ultrassônico HC-SR04 | VCC | 3V3 |
 | Sensor ultrassônico HC-SR04 | GND | GND |
-| Display LCD 16x2 (I2C) | SDA | GPIO 17 |
-| Display LCD 16x2 (I2C) | SCL | GPIO 16 |
+| Display LCD 16x2 (I2C) | SDA | GPIO 21 |
+| Display LCD 16x2 (I2C) | SCL | GPIO 22 |
 | Display LCD 16x2 (I2C) | VCC | 3V3 |
 | Display LCD 16x2 (I2C) | GND | GND |
 
