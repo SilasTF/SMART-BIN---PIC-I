@@ -22,6 +22,20 @@ void imprime_inicializacao(LiquidCrystal_I2C lcd)
 }
 
 /**
+ * @brief imprime que o sensor está sendo calibrado
+ * @param lcd objeto display para a impressao
+ */
+void imprime_calibracao(LiquidCrystal_I2C lcd)
+{
+  lcd.backlight();
+
+  lcd.setCursor(3, 0);
+  lcd.print("Smart Bin");
+  lcd.setCursor(0, 1);
+  lcd.print("Calibrando...");
+}
+
+/**
  * @brief imprime uma mensagem de erro no display 16x2
  * @param lcd objeto display para a impressao
  */
@@ -65,14 +79,13 @@ void imprime_distancia_porcentagem(LiquidCrystal_I2C lcd, float dist, float prct
 void imprime_porcentagem(LiquidCrystal_I2C lcd, float prctg)
 {
   lcd.clearWriteError();
-  lcd.clear();
 
   lcd.backlight();
 
   lcd.setCursor(3, 0);
   lcd.print("Smart Bin");
   lcd.setCursor(3, 1);
-  lcd.printf("Nivel: %.0f%%", prctg);
+  lcd.printf("Nivel: %.0f%% ", prctg);
 }
 
 /**

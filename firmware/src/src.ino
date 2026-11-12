@@ -13,7 +13,7 @@
 #define NIVEL_ALERTA_LIXEIRA 80 // porcentagem a partir da qual a lixeira emite a notificacao
 
 //TROCAR PELAS MEDICOES REAIS
-#define ALTURA_LIXEIRA_VAZIA 45
+#define ALTURA_LIXEIRA_VAZIA 41
 #define ALTURA_LIXEIRA_CHEIA 5
 
 

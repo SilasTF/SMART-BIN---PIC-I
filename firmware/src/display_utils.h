@@ -13,6 +13,12 @@
 void imprime_inicializacao(LiquidCrystal_I2C lcd);
 
 /**
+ * @brief imprime que o sensor está sendo calibrado
+ * @param lcd objeto display para a impressao
+ */
+void imprime_calibracao(LiquidCrystal_I2C lcd);
+
+/**
  * @brief imprime uma mensagem de erro no display 16x2
  * @param lcd objeto display para a impressao
  */
