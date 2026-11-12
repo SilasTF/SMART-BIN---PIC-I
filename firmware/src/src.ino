@@ -13,7 +13,7 @@
 #define NIVEL_ALERTA_LIXEIRA 80 // porcentagem a partir da qual a lixeira emite a notificacao
 
 //TROCAR PELAS MEDICOES REAIS
-#define ALTURA_LIXEIRA_VAZIA 41
+float ALTURA_LIXEIRA_VAZIA;
 #define ALTURA_LIXEIRA_CHEIA 5
 
 
@@ -36,6 +36,9 @@ void setup(){
 
   lcd.init();
   imprime_inicializacao(lcd);
+
+  ALTURA_LIXEIRA_VAZIA = get_dist(TRIGGER, ECHO);
+  Serial.println("Altura vazia: %.2f", ALTURA_LIXEIRA_VAZIA);
 }
 
 void loop(){
