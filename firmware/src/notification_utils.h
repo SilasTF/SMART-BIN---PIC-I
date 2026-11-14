@@ -8,10 +8,10 @@
 #include <HTTPClient.h>
 
 // constantes
-#define WIFI_SSID  "iPhone"    // nome da rede wifi
-#define WIFI_PASS  "12365789"   // senha da rede wifi
-#define BOT_TOKEN  "9151049192:AAGKf25czvCEmKzeI5uaVc0upaDqzX7DSUY"   // token do bot do telegram (nao vou publicar o meu aqui)
-#define CHAT_ID    "8652317542" // id do chat do telegram com o bot
+#define WIFI_SSID  "-"    // nome da rede wifi
+#define WIFI_PASS  "-"   // senha da rede wifi
+#define BOT_TOKEN  "-"   // token do bot do telegram (nao vou publicar o meu aqui)
+#define CHAT_ID    "-" // id do chat do telegram com o bot
 
 #define TIME_OUT 10000 // em milissegundos
 
