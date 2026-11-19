@@ -1,4 +1,5 @@
 #include "notification_utils.h"
+#include "setup_portal.h"  
 
 /**
  * @brief utiliza a o wifi e a senha definidos nas constantes conecta no wifi
@@ -8,7 +9,7 @@ bool conecta_wifi()
   int tempo_esperado = 0;
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  WiFi.begin(cfg.ssid, cfg.pass); 
 
   Serial.print("Conectando");
   while (WiFi.status() != WL_CONNECTED) {
@@ -52,11 +53,11 @@ bool envia_mensagem_telegram(const char *msg)
   client.setInsecure();
 
   HTTPClient http;
-  http.begin(client, String("https://api.telegram.org/bot") + BOT_TOKEN + "/sendMessage");
+  http.begin(client, String("https://api.telegram.org/bot") + cfg.token + "/sendMessage");
   http.addHeader("Content-Type", "application/json");
 
-  int code = http.POST(String("{\"chat_id\":\"") + CHAT_ID + "\",\"text\":\"" + msg + "\"}");
-
+  int code = http.POST(String("{\"chat_id\":\"") + cfg.chat + "\",\"text\":\"" + msg + "\"}");
+  
   http.end();
   desconecta_wifi();
   return code == 200;
