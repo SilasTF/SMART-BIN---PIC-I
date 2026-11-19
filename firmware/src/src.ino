@@ -13,11 +13,6 @@
 
 #define NIVEL_ALERTA_LIXEIRA 80 // porcentagem a partir da qual a lixeira emite a notificacao
 
-//TROCAR PELAS MEDICOES REAIS
-float ALTURA_LIXEIRA_VAZIA;
-#define ALTURA_LIXEIRA_CHEIA 5
-
-
 // objetos
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 
