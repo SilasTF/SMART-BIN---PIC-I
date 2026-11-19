@@ -2,6 +2,7 @@
 #include "medicao.h"
 #include "display_utils.h"
 #include "notification_utils.h"
+#include "setup_portal.h"  
 
 
 // constantes
@@ -38,21 +39,25 @@ void setup(){
   imprime_inicializacao(lcd);
 
   ALTURA_LIXEIRA_VAZIA = get_dist(TRIGGER, ECHO);
-  Serial.println("Altura vazia: %.2f", ALTURA_LIXEIRA_VAZIA);
+  Serial.printf("Altura vazia: %.2f\n", ALTURA_LIXEIRA_VAZIA);
+
+  // setup inicial se nao foi feito ainda
+  bool calibrado = cfg_carregar();
+  float d = get_dist(TRIGGER, ECHO);
+  if (!calibrado || (d > 0 && d < 3))
+  {
+    portal_executa(lcd, TRIGGER, ECHO);   // nao retorna: salva e reinicia
+  }
 }
 
 void loop(){
-
-  Serial.println(get_dist(TRIGGER, ECHO));
-
   float dist = get_dist(TRIGGER, ECHO);
-  
 
   if (dist < 0){
     imprime_mensagem_erro(lcd);
   }
   else{
-    float pct_atual = CalculaPorcentagem(dist, ALTURA_LIXEIRA_VAZIA, ALTURA_LIXEIRA_CHEIA);
+    float pct_atual = CalculaPorcentagem(dist, cfg.altura_vazia, cfg.altura_cheia);
 
     if (!(pct_atual > pct - 5 && pct_atual < pct + 2))
     {
@@ -63,15 +68,14 @@ void loop(){
 
     if (pct > NIVEL_ALERTA_LIXEIRA && !ja_ocorreu_aviso)
     {
-      envia_mensagem_telegram("Já está na hora tirar o lixo fora!");
-      ja_ocorreu_aviso = 1;
+      if (notificacoes_ativas() && envia_mensagem_telegram("Já está na hora tirar o lixo fora!"))
+        ja_ocorreu_aviso = true;
     }
-    else
+    else if (pct < NIVEL_ALERTA_LIXEIRA - 10)
     {
-      ja_ocorreu_aviso = 0;
+      ja_ocorreu_aviso = false;   // lixeira esvaziada: libera um novo aviso
     }
   }
-  
-  delay(1000);
 
-}   
+  delay(1000);
+}

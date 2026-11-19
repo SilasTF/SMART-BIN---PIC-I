@@ -45,4 +45,10 @@ void imprime_porcentagem(LiquidCrystal_I2C lcd, float prctg);
  */
 void apaga_display(LiquidCrystal_I2C lcd);
 
+/**
+ * @brief mostra no display como acessar o portal de configuracao
+ * @param lcd objeto display para a impressao
+ */
+void imprime_portal(LiquidCrystal_I2C lcd);
+
 #endif DISPLAY_UTILS_H

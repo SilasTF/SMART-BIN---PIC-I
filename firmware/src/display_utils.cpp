@@ -99,3 +99,15 @@ void apaga_display(LiquidCrystal_I2C lcd)
 
   lcd.noBacklight();
 }
+
+void imprime_portal(LiquidCrystal_I2C lcd)
+{
+  lcd.clearWriteError();
+  lcd.clear();
+  lcd.backlight();
+
+  lcd.setCursor(1, 0);
+  lcd.print("SmartBin-Setup");
+  lcd.setCursor(2, 1);
+  lcd.print("192.168.4.1");
+}

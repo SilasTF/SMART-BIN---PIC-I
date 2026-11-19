@@ -63,6 +63,6 @@ float desvio_padrao(const float *vetor, int tamanho, float med);
  * @param h_lixeira_cheia distancia minima que o conteudo da lixeira pode chegar do sensor
  * @return float da porcentagem de lotacao da lixeira
  */
-float CalculaPorcentagem(float dist, int h_lixeira_vazia, int h_lixeira_cheia);
+float CalculaPorcentagem(float dist, float h_lixeira_vazia, float h_lixeira_cheia);
 
 #endif MEDICAO_H
