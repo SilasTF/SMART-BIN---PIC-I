@@ -17,6 +17,9 @@ struct Config {
   char chat[24];       // id do chat do telegram
   float altura_vazia;  // distancia sensor -> fundo, com a lixeira vazia (cm)
   float altura_cheia;  // distancia minima sensor -> lixo (cm)
+  char servidor[96];   // endereco do painel online (ex.: https://pc.tailnet.ts.net), sem barra no fim
+  char chave[64];      // chave da API do painel
+  uint32_t sync_min;   // de quantos em quantos minutos enviar leituras ao painel
 };
 
 extern Config cfg;
@@ -28,6 +31,16 @@ extern Config cfg;
  * @return true se a lixeira ja foi calibrada, false se e a primeira vez
  */
 bool cfg_carregar();
+
+/**
+ * @brief grava a variavel global cfg na flash
+ */
+void cfg_salvar();
+
+/**
+ * @brief indica se o painel online foi configurado (endereco e chave preenchidos)
+ */
+bool servidor_ativo();
 
 /**
  * @brief indica se wifi, token e chat id foram preenchidos

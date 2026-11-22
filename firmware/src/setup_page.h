@@ -42,12 +42,17 @@ button:disabled{opacity:.6}
 <label>Distância vazia (cm)<input id="v" name="vazia" type="number" step="0.1" min="1" required></label>
 <label>Distância cheia (cm)<input id="c2" name="cheia" type="number" step="0.1" min="1" value="5" required></label>
 </div></fieldset>
-<fieldset><legend>2. Notificações (opcional)</legend>
-<p class="m" style="margin:0">Deixe em branco para usar só o display.</p>
+<fieldset><legend>2. Wi-Fi e Telegram (opcional)</legend>
+<p class="m" style="margin:0">Deixe em branco para usar só o display. O Telegram direto só é usado se não houver painel.</p>
 <label>Nome da rede Wi-Fi<input name="ssid" autocapitalize="none" autocomplete="off"></label>
 <label>Senha do Wi-Fi<input name="pass" type="password" autocomplete="new-password"></label>
 <label>Token do bot<input name="token" autocapitalize="none" autocomplete="off"></label>
 <label>Chat ID<input name="chat" autocomplete="off"></label>
+</fieldset>
+<fieldset><legend>3. Painel online (opcional)</legend>
+<p class="m" style="margin:0">Usa o Wi-Fi acima. Com o painel, ele envia os avisos e guarda o histórico.</p>
+<label>Endereço do painel<input name="servidor" type="url" autocapitalize="none" autocomplete="off" placeholder="https://seu-pc.seu-tailnet.ts.net"></label>
+<label>Chave da API<input name="chave" type="password" autocomplete="new-password"></label>
 </fieldset>
 <button type="submit">Salvar e iniciar</button>
 </form></main><div id="t" role="status"></div>
