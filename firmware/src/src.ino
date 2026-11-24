@@ -33,8 +33,6 @@ void setup(){
   lcd.init();
   imprime_inicializacao(lcd);
 
-  ALTURA_LIXEIRA_VAZIA = get_dist(TRIGGER, ECHO);
-  Serial.printf("Altura vazia: %.2f\n", ALTURA_LIXEIRA_VAZIA);
 
   // setup inicial se nao foi feito ainda
   bool calibrado = cfg_carregar();
