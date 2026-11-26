@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lixeiras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F8F6;--surf:#fff;--ink:#0E2A29;--mute:#5B7775;--line:#D5E5E1;--ok:#14A38F;--warn:#E3A32F;--full:#D9604C;--tint:.16}
+:root[data-theme=dark]{--bg:#0B1A1B;--surf:#122728;--ink:#E4F2EF;--mute:#8AA9A6;--line:#21403F;--ok:#3FD1BD;--warn:#EFB94D;--full:#F07E6A;--tint:.2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ok);outline-offset:2px}
+header{display:flex;justify-content:space-between;align-items:center;max-width:960px;margin:0 auto;padding:20px 20px 8px}
+header a{font-weight:700;font-size:20px;color:inherit;text-decoration:none}
+.icon-btn{background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+main{max-width:960px;margin:0 auto;padding:12px 20px 60px}
+h1{font-size:32px;line-height:1.15;margin:12px 0 4px;font-weight:700}
+.mute{color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px;margin-top:22px}
+.bin-card{background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:22px 18px 18px;text-align:center;cursor:pointer;transition:border-color .2s,transform .2s}
+.bin-card:hover{border-color:var(--ok);transform:translateY(-2px)}
+.bin-card svg{width:108px;height:135px}
+.bin-card b{display:block;font-size:18px;margin-top:6px}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.full{color:var(--full)}
+.bin-body{fill:currentColor;fill-opacity:var(--tint)}
+.bin-fill{fill:currentColor}
+.bin-fill-g{transition:transform 1s cubic-bezier(.3,.8,.3,1)}
+.bin-line{stroke:currentColor;stroke-width:3;stroke-linecap:round}
+.bin-out{fill:none;stroke:currentColor;stroke-width:3;stroke-linejoin:round}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin:18px 0 22px}
+.tabs a{padding:8px 14px;text-decoration:none;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs a.on{color:var(--ink);border-color:var(--ok)}
+.hero{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.hero svg{width:130px;height:163px}
+.big{font-size:64px;line-height:1;font-weight:700;letter-spacing:-.02em}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:18px}
+.stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:10px}
+.stats div span{display:block;color:var(--mute);font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;float:right}
+.seg button{background:none;border:0;padding:4px 14px;cursor:pointer;color:var(--mute)}
+.seg button.on{background:var(--ok);color:var(--bg)}
+.chart{width:100%;height:auto;margin-top:8px}
+.chart text{fill:var(--mute);font-size:11px}
+form{display:grid;gap:18px;max-width:560px}
+fieldset{border:1px solid var(--line);border-radius:18px;padding:16px 18px 18px;margin:0;background:var(--surf);display:grid;gap:12px}
+legend{font-weight:700;padding:0 6px}
+label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+input{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--ink);width:100%}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{background:var(--ok);color:var(--bg);border:0;border-radius:12px;padding:11px 20px;font-weight:700;cursor:pointer;justify-self:start}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line);font-weight:500;padding:8px 14px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;transition:transform .3s}
+.toast.show{transform:translate(-50%,0)}
+select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--ink);width:100%}
+.rule{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.rule>div{flex:1}.rule small{display:block;color:var(--mute)}.rule input{width:auto}.rule.off b{opacity:.5}
+.acts{display:flex;gap:8px;flex-wrap:wrap}.note{font-size:13px;color:var(--mute);margin:0}
+ul.plain{list-style:none;padding:0;margin:8px 0 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header><a href="#/">Lixeiras</a><button class="icon-btn" id="theme" aria-label="Alternar tema claro e escuro">Tema</button></header>
+<main id="app"></main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $ = s => document.querySelector(s);
+let uid = 0, range = 24;
+
+/* ---------- tema ---------- */
+const root = document.documentElement;
+root.dataset.theme = localStorage.theme || (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light");
+$("#theme").onclick = () => { root.dataset.theme = localStorage.theme = root.dataset.theme === "dark" ? "light" : "dark"; };
+
+/* ---------- utilidades ---------- */
+async function api(url, opt) {
+  const r = await fetch(url, opt);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || r.statusText);
+  return j;
+}
+function toast(t) { const el = $("#toast"); el.textContent = t; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2400); }
+const tone = (p, l) => p < l[0] ? "ok" : p < l[1] ? "warn" : "full";
+const ago = ts => { if (!ts) return "sem leituras"; const m = Math.round((Date.now() / 1000 - ts) / 60); return m < 1 ? "agora" : m < 60 ? `há ${m} min` : m < 1440 ? `há ${Math.round(m / 60)} h` : `há ${Math.round(m / 1440)} d`; };
+const eta = h => h == null ? "Sem previsão ainda" : h < 1 ? "Deve encher em menos de 1 h" : `Deve encher em cerca de ${h < 48 ? Math.round(h) + " h" : Math.round(h / 24) + " dias"}`;
+const when = ts => new Date(ts * 1000).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+
+/* ---------- ícone da lixeira que enche ---------- */
+function binSVG(pct, cls) {
+  const id = "c" + (++uid), top = 28, h = 66, y = (1 - pct / 100) * h;
+  return `<svg viewBox="0 0 80 100" class="${cls}" role="img" aria-label="${Math.round(pct)}% cheia">
+    <defs><clipPath id="${id}"><path d="M14 28h52l-5 66H19z"/></clipPath></defs>
+    <path class="bin-body" d="M14 28h52l-5 66H19z"/>
+    <g clip-path="url(#${id})"><g class="bin-fill-g" style="transform:translateY(${y}px)">
+      <rect class="bin-fill" x="0" y="${top}" width="80" height="${h + 4}"/>
+      <line class="bin-line" x1="0" x2="80" y1="${top}" y2="${top}"/></g></g>
+    <path class="bin-out" d="M14 28h52l-5 66H19z"/>
+    <path class="bin-out" d="M8 20h64M31 20v-6h18v6"/></svg>`;
+}
+
+/* ---------- tela: seleção ---------- */
+async function viewList() {
+  const { bins } = await api("/api/bins");
+  $("#app").innerHTML = `<h1>Suas lixeiras</h1><p class="mute">Escolha uma para ver o histórico e ajustar as configurações.</p>` +
+    (bins.length ? `<div class="grid">${bins.map(b => `
+      <button class="bin-card ${tone(b.pct, b.levels)}" onclick="location.hash='#/b/${b.id}'">
+        ${binSVG(b.pct, "")}<b style="color:var(--ink)">${b.name}</b>
+        <span>${Math.round(b.pct)}% · <span class="mute">${b.offline ? "sem sinal, " : ""}${ago(b.ts)}</span></span></button>`).join("")}</div>`
+      : `<div class="panel">Nenhuma lixeira conectada ainda. Quando o ESP32 enviar a primeira leitura, ela aparece aqui.</div>`);
+}
+
+/* ---------- tela: visão geral ---------- */
+function chart(hist, lv, hours) {
+  const W = 640, H = 200, L = 34, B = 22, T = 8, end = Date.now() / 1000, start = end - hours * 3600;
+  const X = t => L + (t - start) / (end - start) * (W - L - 8), Y = p => T + (1 - p / 100) * (H - T - B);
+  const pts = hist.map(r => `${X(r.ts).toFixed(1)},${Y(r.pct).toFixed(1)}`);
+  const grid = [0, 50, 100].map(p => `<line x1="${L}" x2="${W - 8}" y1="${Y(p)}" y2="${Y(p)}" stroke="var(--line)"/><text x="0" y="${Y(p) + 4}">${p}%</text>`).join("");
+  const th = lv.map(p => `<line x1="${L}" x2="${W - 8}" y1="${Y(p)}" y2="${Y(p)}" stroke="var(--warn)" stroke-dasharray="4 4" opacity=".6"/>`).join("");
+  const ticks = [0, .5, 1].map(f => { const t = start + f * (end - start); return `<text x="${X(t)}" y="${H - 4}" text-anchor="${f ? (f == 1 ? "end" : "middle") : "start"}">${hours <= 24 ? new Date(t * 1000).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : new Date(t * 1000).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}</text>`; }).join("");
+  if (pts.length < 2) return `<p class="mute">Ainda não há leituras suficientes neste período.</p>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Ocupação ao longo do tempo">${grid}${th}${ticks}
+    <polygon points="${X(hist[0].ts)},${Y(0)} ${pts.join(" ")} ${X(hist.at(-1).ts)},${Y(0)}" fill="var(--ok)" opacity=".12"/>
+    <polyline points="${pts.join(" ")}" fill="none" stroke="var(--ok)" stroke-width="2.5" stroke-linejoin="round"/></svg>`;
+}
+async function viewDetail(id, tab) {
+  const b = await api(`/api/bins/${id}?hours=${range}`), c = b.config, t = tone(b.pct, b.levels);
+  const tabs = `<nav class="tabs"><a href="#/b/${id}" class="${tab ? "" : "on"}">Visão geral</a><a href="#/b/${id}/config" class="${tab ? "on" : ""}">Configurações</a></nav>`;
+  const head = `<a href="#/" class="mute">← Todas as lixeiras</a><h1>${b.name}</h1>`;
+  if (tab) return viewConfig(id, b, head + tabs);
+  $("#app").innerHTML = head + tabs + `
+    <div class="hero ${t}">${binSVG(b.pct, "")}
+      <div><div class="big">${Math.round(b.pct)}%</div>
+      <div style="color:var(--ink)">${b.offline ? "Sem sinal do ESP32 · última leitura " + ago(b.ts) : eta(b.eta_h)}</div>
+      <div class="stats" style="color:var(--ink)"><div><span>Última leitura</span>${ago(b.ts)}</div>
+        <div><span>Distância</span>${b.distance ?? "—"} cm</div><div><span>Bateria</span>${b.battery ? b.battery.toFixed(2) + " V" : "—"}</div>
+        <div><span>Último esvaziamento</span>${b.emptied.length ? ago(b.emptied[0]) : "—"}</div></div></div></div>
+    <div class="panel"><div class="seg" role="group" aria-label="Período">${[[24, "24 h"], [168, "7 dias"], [720, "30 dias"]].map(([h, l]) => `<button class="${h == range ? "on" : ""}" onclick="range=${h};route()">${l}</button>`).join("")}</div>
+      <b>Ocupação</b>${chart(b.history, b.levels, range)}</div>
+    <div class="panel"><button class="btn ghost" style="float:right" onclick="markEmptied('${id}')">Registrar esvaziamento agora</button><b>Últimos esvaziamentos</b><ul class="plain">${b.emptied.length ? b.emptied.map(e => `<li>${when(e)}</li>`).join("") : `<li class="mute">Nenhum esvaziamento detectado ainda.</li>`}</ul></div>`;
+}
+
+async function markEmptied(id) {
+  try { await api(`/api/bins/${id}/emptied`, { method: "POST" }); toast("Esvaziamento registrado"); route(); } catch (e) { toast(e.message); }
+}
+
+/* ---------- tela: configurações ---------- */
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const PARAMS = {
+  capacity: '<label>Nível de ocupação (%)<input id="p-level" type="number" min="1" max="100" value="80"></label>',
+  elapsed: '<label>Horas desde o último esvaziamento<input id="p-hours" type="number" min="1" value="48"></label>',
+  clock: '<div class="row"><label>Horário<input id="p-time" type="time" value="08:00"></label><label>Só se estiver acima de (%)<input id="p-min" type="number" min="0" max="100" value="0"></label></div>'
+};
+const NAMES = { capacity: "Capacidade", elapsed: "Tempo desde o esvaziamento", clock: "Horário do dia" };
+// Modelo da RDC 222/2018 (Anvisa), art. 14, resíduos do grupo A: troca do saco com 2/3 da capacidade ou a cada 48 h
+const RDC = [
+  { id: "rdc1", type: "capacity", enabled: true, label: "Trocar o saco (2/3 da capacidade)", level: 67 },
+  { id: "rdc2", type: "elapsed", enabled: true, label: "Trocar o saco (48 h sem troca)", hours: 48 },
+  { id: "rdc3", type: "elapsed", enabled: false, label: "Resíduo de fácil putrefação (24 h)", hours: 24 }
+];
+const ruleText = r => r.type === "capacity" ? `Quando a ocupação chegar a ${r.level}%` : r.type === "elapsed" ? `${r.hours} h depois do último esvaziamento` : `Todo dia às ${r.time}` + (r.min_pct ? `, se estiver acima de ${r.min_pct}%` : "");
+function viewConfig(id, b, top) {
+  const c = b.config, f = (k, label, type = "text", extra = "") => `<label>${label}<input name="${k}" type="${type}" value="${c[k] ?? ""}" ${extra}></label>`;
+  $("#app").innerHTML = top + `<form id="cfg">
+    <fieldset><legend>Identificação</legend>${f("name", "Nome da lixeira")}</fieldset>
+    <fieldset><legend>Rede Wi-Fi do ESP32</legend>${f("wifi_ssid", "Nome da rede")}${f("wifi_pass", "Senha", "password", 'autocomplete="new-password"')}</fieldset>
+    <fieldset><legend>Calibração</legend>
+      <div class="row">${f("empty_cm", "Distância com a lixeira vazia (cm)", "number", 'step="0.1"')}${f("full_cm", "Distância com a lixeira cheia (cm)", "number", 'step="0.1"')}</div>
+      <div><button type="button" class="btn ghost" data-cal="empty_cm">Usar leitura atual como vazia</button>
+      <button type="button" class="btn ghost" data-cal="full_cm">Usar leitura atual como cheia</button></div>
+      <span class="mute">Leitura atual: ${b.distance ?? "—"} cm. Com a lixeira na situação desejada, aperte o botão e salve.</span></fieldset>
+    <fieldset><legend>Notificações</legend>
+      <div id="rules"></div>
+      <div id="np" hidden style="display:grid;gap:10px">
+        <label>Tipo<select id="np-type">${Object.entries(NAMES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
+        <label>Nome da notificação<input id="np-label" maxlength="40" placeholder="Ex.: Trocar o saco"></label>
+        <div id="np-p"></div>
+        <div class="acts"><button type="button" class="btn" id="np-add">Adicionar</button><button type="button" class="btn ghost" id="np-cancel">Cancelar</button></div>
+      </div>
+      <div class="acts"><button type="button" class="btn ghost" id="np-new">Adicionar notificação</button><button type="button" class="btn ghost" id="rdc">Modelo RDC 222/2018 (Anvisa)</button></div>
+      <p class="note">O modelo da RDC 222/2018 (resíduos do grupo A) cria avisos para trocar o saco com 2/3 da capacidade ou a cada 48 h; o de 24 h, para resíduos de fácil putrefação, vem desativado. É só um atalho e não substitui o PGRSS do serviço. O percentual só equivale à capacidade do saco se a calibração "cheia" estiver no limite de enchimento dele.</p>
+      <div class="row">${f("quiet_start", "Sem avisos a partir de", "time")}${f("quiet_end", "Avisos voltam às", "time")}</div></fieldset>
+    <fieldset><legend>Envio de dados</legend>${f("sync_minutes", "Enviar leituras a cada (minutos)", "number", 'min="1"')}
+      <span class="mute">O ESP32 aplica as mudanças no próximo envio.</span></fieldset>
+    <button class="btn" type="submit">Salvar alterações</button></form>`;
+  const form = $("#cfg");
+  let rules = JSON.parse(JSON.stringify(c.rules));
+  const draw = () => {
+    $("#rules").innerHTML = rules.length ? rules.map((r, i) => `<div class="rule ${r.enabled ? "" : "off"}">
+      <input type="checkbox" ${r.enabled ? "checked" : ""} data-on="${i}" aria-label="Ativar ${esc(r.label)}">
+      <div><b>${esc(r.label)}</b><small>${NAMES[r.type]}: ${ruleText(r)}</small></div>
+      <button type="button" class="btn ghost" data-del="${i}">Remover</button></div>`).join("") : `<p class="note">Nenhuma notificação configurada.</p>`;
+    $("#rules").querySelectorAll("[data-on]").forEach(x => x.onchange = () => { rules[x.dataset.on].enabled = x.checked; draw(); });
+    $("#rules").querySelectorAll("[data-del]").forEach(x => x.onclick = () => { rules.splice(x.dataset.del, 1); draw(); });
+  };
+  const params = () => { $("#np-p").innerHTML = PARAMS[$("#np-type").value]; };
+  draw(); params();
+  $("#np-type").onchange = params;
+  $("#np-new").onclick = () => { $("#np").hidden = false; $("#np-label").focus(); };
+  $("#np-cancel").onclick = () => { $("#np").hidden = true; };
+  $("#np-add").onclick = () => {
+    const t = $("#np-type").value, r = { id: "n" + Date.now(), type: t, enabled: true, label: $("#np-label").value.trim() || NAMES[t] };
+    if (t === "capacity") r.level = parseInt($("#p-level").value);
+    if (t === "elapsed") r.hours = parseInt($("#p-hours").value);
+    if (t === "clock") { r.time = $("#p-time").value; r.min_pct = parseInt($("#p-min").value) || 0; }
+    if ([r.level, r.hours].some(v => v !== undefined && !(v > 0)) || (t === "clock" && !r.time)) return toast("Confira os valores da notificação");
+    rules.push(r); $("#np-label").value = ""; $("#np").hidden = true; draw(); toast("Adicionada. Salve para confirmar.");
+  };
+  $("#rdc").onclick = () => {
+    if (rules.length && !confirm("Isso substitui as notificações atuais pelo modelo da RDC 222/2018. Continuar?")) return;
+    rules = JSON.parse(JSON.stringify(RDC)); draw(); toast("Modelo aplicado. Salve para confirmar.");
+  };
+  form.querySelectorAll("[data-cal]").forEach(btn => btn.onclick = () => { if (b.distance != null) form[btn.dataset.cal].value = b.distance; else toast("Ainda não há leitura do sensor"); });
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(form));
+    ["empty_cm", "full_cm"].forEach(k => body[k] = parseFloat(body[k]));
+    body.sync_minutes = parseInt(body.sync_minutes);
+    body.rules = rules;
+    try { await api(`/api/bins/${id}/config`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); toast("Alterações salvas"); }
+    catch (err) { toast("Não foi possível salvar: " + err.message); }
+  };
+}
+
+/* ---------- rotas ---------- */
+async function route() {
+  const m = location.hash.match(/^#\/b\/([^/]+)(\/config)?$/);
+  try { m ? await viewDetail(decodeURIComponent(m[1]), !!m[2]) : await viewList(); }
+  catch (e) { $("#app").innerHTML = `<div class="panel">Não foi possível carregar os dados: ${e.message}. Verifique se o servidor está rodando.</div>`; }
+}
+addEventListener("hashchange", route);
+setInterval(() => { if (!document.activeElement.closest("form")) route(); }, 30000);
+route();
+</script>
+</body>
+</html>
