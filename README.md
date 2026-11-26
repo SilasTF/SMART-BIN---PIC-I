@@ -58,10 +58,10 @@
 |---|---|
 | **ESP32** | Responsável pelo controle e processamento das informações recebidas pelos sensores, além de possuir comunicação sem fio. |
 | **Sensor de proximidade (HC-SR04 P)** | Identifica a distância entre o sensor e o nível do lixo dentro da lixeira, permitindo calcular aproximadamente o percentual de ocupação. |
-| **Protoboard** | Realiza as conexões entre os componentes eletrônicos para teste. Caso não seja possível soldar, ela pode ser usada diretamente na montagem final. |
+| **Protoboard** | Realiza as conexões entre os componentes eletrônicos, usada diretamente na montagem final. |
 | **Cabos jumper** | Realizam as conexões elétricas entre o ESP32, o sensor e os demais componentes. |
 | **Bateria** | Alimenta o circuito. |
-| **Lixeira (Lixeira izy Ou 15L)** | Estrutura física onde são instalados o sensor e os componentes necessários para o funcionamento do sistema. |
+| **Lixeira** | Estrutura física onde são instalados o sensor e os componentes necessários para o funcionamento do sistema. |
 | **LCD Keypad Shield I2C** | Funciona como display do projeto, exibindo o percentual de ocupação do lixo. |
 
 ---
@@ -101,7 +101,7 @@ smart-bin/
 | Pasta       | Descrição                                                                                                                      |
 |-------------|--------------------------------------------------------------------------------------------------------------------------------|
 | `docs/`     | Documentação e materiais de apoio do projeto.                                                                                  |
-| `firmware/` | Código embarcado do ESP32: leitura do sensor, cálculo do percentual, controle de LEDs, display e avisos ao usuário.            |
+| `firmware/` | Código embarcado do ESP32: leitura do sensor, cálculo do percentual, controle de LEDs, display e avisos ao usuário. Além do código da página web que gerencia as lixeiras.            |
 | `hardware/` | Simulação Wokwi, esquemático em PDF, modelos CAD/3D e datasheets dos componentes.                                              |
 | `software/` | Códigos externos (de terceiros) utilizados no projeto, não desenvolvidos pela equipe.                                          |
 
@@ -138,11 +138,10 @@ Os arquivos do projeto Wokwi estão em [`hardware/Wokwi/Esquematico medidor de a
 - [Arduino IDE](https://www.arduino.cc/en/software) 2.x
 - Pacote de placas **esp32 by Espressif Systems** (Gerenciador de Placas)
 - Biblioteca **LiquidCrystal I2C** (Gerenciador de Bibliotecas)
-- As bibliotecas `Wire`, `WiFi`, `WiFiClientSecure` e `HTTPClient` já vêm com o pacote do ESP32
+- As bibliotecas `Wire`, `WiFi`, `WiFiClientSecure`, `HTTPClient`, `WebServer` e `Preferences` já vêm com o pacote do ESP32
 - Driver USB-Serial da placa (CP210x ou CH340, conforme o modelo)
 - Biblioteca **ArduinoJson** 7.x, de Benoit Blanchon (Gerenciador de Bibliotecas), usada para ler a configuração do painel
-- As bibliotecas `WebServer` e `Preferences` também já vêm com o pacote do ESP32
-- Para o painel: **Python 3.8+**
+- Para o painel (página web externa): **Python 3.8+**
 
 **Hardware**
 
@@ -182,6 +181,8 @@ Os arquivos do projeto Wokwi estão em [`hardware/Wokwi/Esquematico medidor de a
 | `medicao.cpp` / `medicao.h`             | Leitura do HC-SR04, filtro de leituras discrepantes e cálculo da porcentagem        |
 | `display_utils.cpp` / `display_utils.h` | Mensagens do LCD (inicialização, erro, nível de ocupação)                           |
 | `notification_utils.cpp` / `.h`         | Conexão Wi-Fi e envio de mensagem pelo bot do Telegram                              |
+| `setup_portal.cpp` / `.h`               | Comunicação com o painel                                                            |
+| `setup_page.h`                          | Armazena a pagina web do setup inicial                                              |
 
 
 ## 📲 Configuração Inicial (portal da lixeira)
@@ -200,7 +201,7 @@ Na primeira vez que a lixeira liga, ela abre uma rede Wi-Fi própria para ser co
 
 4. Ao salvar, os dados vão para a memória flash e a lixeira reinicia. Eles **sobrevivem a regravar o firmware**.
 
-**Reconfigurar:** ligue a lixeira com a mão a menos de 3 cm do sensor para reabrir o portal.
+**Reconfigurar:** ligue a lixeira com a mão a menos de 7 cm do sensor para reabrir o portal.
 
 **Comportamento depois de configurada**
 
