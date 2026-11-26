@@ -57,6 +57,7 @@ input{background:var(--bg);border:1px solid var(--line);border-radius:10px;paddi
 select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--ink);width:100%}
 .rule{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .rule>div{flex:1}.rule small{display:block;color:var(--mute)}.rule input{width:auto}.rule.off b{opacity:.5}
+.btn.danger{color:var(--full);border-color:var(--full)}
 .acts{display:flex;gap:8px;flex-wrap:wrap}.note{font-size:13px;color:var(--mute);margin:0}
 ul.plain{list-style:none;padding:0;margin:8px 0 0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -184,8 +185,13 @@ function viewConfig(id, b, top) {
       <div class="row">${f("quiet_start", "Sem avisos a partir de", "time")}${f("quiet_end", "Avisos voltam às", "time")}</div></fieldset>
     <fieldset><legend>Envio de dados</legend>${f("sync_minutes", "Enviar leituras a cada (minutos)", "number", 'min="1"')}
       <span class="mute">O ESP32 aplica as mudanças no próximo envio.</span></fieldset>
-    <button class="btn" type="submit">Salvar alterações</button></form>`;
+    <button class="btn" type="submit">Salvar alterações</button></form>
+    <p style="margin-top:28px"><button type="button" class="btn ghost danger" id="del">Apagar esta lixeira</button></p>`;
   const form = $("#cfg");
+  $("#del").onclick = async () => {
+    if (!confirm(`Apagar "${b.name}" e todo o histórico? Se o ESP32 continuar enviando, ela será criada de novo.`)) return;
+    try { await api(`/api/bins/${id}`, { method: "DELETE" }); toast("Lixeira apagada"); location.hash = "#/"; } catch (e) { toast(e.message); }
+  };
   let rules = JSON.parse(JSON.stringify(c.rules));
   const draw = () => {
     $("#rules").innerHTML = rules.length ? rules.map((r, i) => `<div class="rule ${r.enabled ? "" : "off"}">

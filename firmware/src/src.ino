@@ -33,7 +33,7 @@ void setup(){
   // primeira vez (sem calibracao salva) ou mao a menos de 3 cm do sensor ao ligar: abre o portal
   bool calibrado = cfg_carregar();
   float d = get_dist(TRIGGER, ECHO);
-  if (!calibrado || (d > 0 && d < 3))
+  if (!calibrado || (d > 0 && d < 7))
   {
     portal_executa(lcd, TRIGGER, ECHO);   // nao retorna: salva e reinicia
   }

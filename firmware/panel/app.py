@@ -140,7 +140,9 @@ def evaluate_rules(bid):
         title = f"{name} — {rule['label']}"
         if t == "capacity":
             if pct >= rule["level"] and st != cycle:
-                new, msg = cycle, f"🗑️ {title}: {pct:.0f}% de ocupação"
+                # se a ocupação já passou de um limite mais alto, avisa só o mais alto (este fica como já avisado)
+                higher = any(o["type"] == "capacity" and o.get("enabled") and pct >= o["level"] > rule["level"] for o in cfg["rules"])
+                new, msg = cycle, (None if higher else f"🗑️ {title}: {pct:.0f}% de ocupação")
             elif st == cycle and pct < rule["level"] - 10:
                 new = ""                              # nível caiu: rearma
         elif t == "elapsed":
@@ -156,9 +158,13 @@ def evaluate_rules(bid):
         if msg and in_quiet(cfg):
             continue                                  # horário silencioso: tenta de novo depois
         if new is not None:
-            if msg:
+            # "reserva" o aviso no banco ANTES de enviar: só quem conseguir gravar envia (evita aviso em dobro)
+            con.execute("INSERT OR IGNORE INTO rule_state VALUES(?,?,'')", (bid, rule["id"]))
+            won = con.execute("UPDATE rule_state SET state=? WHERE bin_id=? AND rule_id=? AND state=?",
+                              (new, bid, rule["id"], st)).rowcount == 1
+            con.commit()
+            if won and msg:
                 notify(msg)
-            con.execute("INSERT OR REPLACE INTO rule_state VALUES(?,?,?)", (bid, rule["id"], new))
     con.commit()
 
 
@@ -266,6 +272,18 @@ def put_config(bid):
     db().execute("UPDATE bins SET config=? WHERE id=?", (json.dumps(cfg), bid))
     db().commit()
     return {"config": cfg}
+
+
+@app.delete("/api/bins/<bid>")
+def delete_bin(bid):
+    if get_cfg(bid) is None:
+        return {"erro": "lixeira não encontrada"}, 404
+    con = db()
+    for table in ("readings", "events", "rule_state"):
+        con.execute(f"DELETE FROM {table} WHERE bin_id=?", (bid,))
+    con.execute("DELETE FROM bins WHERE id=?", (bid,))
+    con.commit()
+    return {"ok": True}
 
 
 @app.post("/api/bins/<bid>/emptied")
