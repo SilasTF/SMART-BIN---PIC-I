@@ -25,7 +25,7 @@
 
 ## 📖 Sobre o Projeto
 
-- **Objetivo:** O que o sistema automatiza, monitora ou executa.
+- **Objetivo:** Automatização do processo de captura de dados da capacidade de lixeiras.
 - **Público-alvo ou Aplicação:** Projeto universitário, protótipo de IoT, automação industrial, etc.
 - **Funcionalidades Principais:**
   - [x] Medição da ocupação com sensor ultrassônico, com filtro de leituras discrepantes.
