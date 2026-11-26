@@ -2,42 +2,40 @@
 #include "medicao.h"
 #include "display_utils.h"
 #include "notification_utils.h"
-#include "setup_portal.h"  
-
+#include "setup_portal.h"
 
 // constantes
 #define TRIGGER 25
-#define ECHO 26 
+#define ECHO 26
 #define SDA_PIN 21
 #define SCL_PIN 22
 
-#define NIVEL_ALERTA_LIXEIRA 80 // porcentagem a partir da qual a lixeira emite a notificacao
+#define NIVEL_ALERTA_LIXEIRA 80 // usado so no Telegram direto (sem painel)
 
 // objetos
-LiquidCrystal_I2C lcd(0x27, 16, 2);  
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // variaveis globais
-bool ja_ocorreu_aviso; // indica se a notificacao ja foi enviada
-float pct; // armazena a porcentagem de lotacao da lixeira
-
+bool ja_ocorreu_aviso = false;     // indica se o aviso (Telegram direto) ja foi enviado
+float pct = 0;                     // porcentagem de lotacao da lixeira
+unsigned long proxima_tentativa = 0; // millis() a partir do qual pode enviar de novo
 
 void setup(){
   Serial.begin(9600);
-
   Wire.begin(SDA_PIN, SCL_PIN);
 
-  // pinmodes
-  pinMode(TRIGGER,OUTPUT);
-  pinMode(ECHO,INPUT);
+  pinMode(TRIGGER, OUTPUT);
+  pinMode(ECHO, INPUT);
 
   lcd.init();
   imprime_inicializacao(lcd);
 
 
-  // setup inicial se nao foi feito ainda
+  // primeira vez (sem calibracao salva) ou mao a menos de 7 cm do sensor ao ligar: abre o portal
+
   bool calibrado = cfg_carregar();
   float d = get_dist(TRIGGER, ECHO);
-  if (!calibrado || (d > 0 && d < 3))
+  if (!calibrado || (d > 0 && d < 7))
   {
     portal_executa(lcd, TRIGGER, ECHO);   // nao retorna: salva e reinicia
   }
@@ -59,14 +57,31 @@ void loop(){
 
     imprime_porcentagem(lcd, pct);
 
-    if (pct > NIVEL_ALERTA_LIXEIRA && !ja_ocorreu_aviso)
+    bool pode_enviar = (long)(millis() - proxima_tentativa) >= 0;
+
+    if (servidor_ativo())
     {
-      if (notificacoes_ativas() && envia_mensagem_telegram("Já está na hora tirar o lixo fora!"))
-        ja_ocorreu_aviso = true;
+      // o painel recebe as leituras, decide os avisos e devolve a configuracao
+      if (pode_enviar)
+      {
+        bool ok = envia_leitura(dist);
+        proxima_tentativa = millis() + (ok ? cfg.sync_min * 60000UL : 60000UL);  // falhou: tenta em 1 min
+      }
     }
-    else if (pct < NIVEL_ALERTA_LIXEIRA - 10)
+    else
     {
-      ja_ocorreu_aviso = false;   // lixeira esvaziada: libera um novo aviso
+      // sem painel: aviso simples pelo Telegram direto
+      if (pct > NIVEL_ALERTA_LIXEIRA && !ja_ocorreu_aviso && pode_enviar)
+      {
+        if (notificacoes_ativas() && envia_mensagem_telegram("Já está na hora tirar o lixo fora!"))
+          ja_ocorreu_aviso = true;
+        else
+          proxima_tentativa = millis() + 60000;
+      }
+      else if (pct < NIVEL_ALERTA_LIXEIRA - 10)
+      {
+        ja_ocorreu_aviso = false;
+      }
     }
   }
 
