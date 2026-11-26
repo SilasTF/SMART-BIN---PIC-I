@@ -30,7 +30,9 @@ void setup(){
   lcd.init();
   imprime_inicializacao(lcd);
 
-  // primeira vez (sem calibracao salva) ou mao a menos de 3 cm do sensor ao ligar: abre o portal
+
+  // primeira vez (sem calibracao salva) ou mao a menos de 7 cm do sensor ao ligar: abre o portal
+
   bool calibrado = cfg_carregar();
   float d = get_dist(TRIGGER, ECHO);
   if (!calibrado || (d > 0 && d < 7))

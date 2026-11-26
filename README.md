@@ -25,7 +25,6 @@
 
 ## 📖 Sobre o Projeto
 
-Descreva com mais detalhes o contexto do projeto:
 - **Objetivo:** O que o sistema automatiza, monitora ou executa.
 - **Público-alvo ou Aplicação:** Projeto universitário, protótipo de IoT, automação industrial, etc.
 - **Funcionalidades Principais:**
